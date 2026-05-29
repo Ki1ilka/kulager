@@ -189,7 +189,23 @@ document.addEventListener('DOMContentLoaded', () => {
 function openProductModal(product) {
     selectedProduct = product;
     document.getElementById('modalProductName').textContent = product.name;
-    document.getElementById('modalQuantity').value = '1';
+
+    // Для ребер - ввод в кг (дробное число)
+    const quantityInput = document.getElementById('modalQuantity');
+    if (product.id === 'rebra') {
+        quantityInput.type = 'number';
+        quantityInput.step = '0.1';
+        quantityInput.placeholder = 'Например: 1.2';
+        quantityInput.value = '1.0';
+        document.querySelector('#productModal label').textContent = 'Количество (кг)';
+    } else {
+        quantityInput.type = 'number';
+        quantityInput.step = '1';
+        quantityInput.placeholder = '1';
+        quantityInput.value = '1';
+        document.querySelector('#productModal label').textContent = 'Количество (шт)';
+    }
+
     document.getElementById('productModal').classList.add('active');
 }
 
@@ -201,19 +217,23 @@ function closeModal() {
 
 // Добавление в корзину
 function addToCart() {
-    const quantity = parseInt(document.getElementById('modalQuantity').value);
+    const quantity = parseFloat(document.getElementById('modalQuantity').value);
 
     if (!quantity || quantity <= 0) {
         alert('Укажите количество');
         return;
     }
 
+    // Для ребер quantity - это уже кг, для остальных - штуки
+    const isRebra = selectedProduct.id === 'rebra';
+
     cart.push({
         id: selectedProduct.id,
         name: selectedProduct.name,
         quantity: quantity,
         price: selectedProduct.price,
-        weight: selectedProduct.weight
+        weight: selectedProduct.weight,
+        isWeightBased: isRebra // флаг что это весовой товар
     });
 
     saveData();
@@ -238,8 +258,19 @@ function renderCart() {
     let totalSum = 0;
 
     cart.forEach((item, index) => {
-        const itemWeight = item.weight * item.quantity;
-        const itemSum = item.price * item.weight * item.quantity;
+        let itemWeight, itemSum, displayText;
+
+        if (item.isWeightBased) {
+            // Для ребер: quantity - это уже кг
+            itemWeight = item.quantity;
+            itemSum = item.price * item.quantity;
+            displayText = `${item.quantity} кг`;
+        } else {
+            // Для остальных: quantity - штуки
+            itemWeight = item.weight * item.quantity;
+            itemSum = item.price * item.weight * item.quantity;
+            displayText = `${item.quantity} шт (${itemWeight.toFixed(1)} кг)`;
+        }
 
         totalWeight += itemWeight;
         totalSum += itemSum;
@@ -249,7 +280,7 @@ function renderCart() {
         div.innerHTML = `
             <div class="cart-item-info">
                 <div class="cart-item-name">${item.name}</div>
-                <div class="cart-item-qty">${item.quantity} шт (${itemWeight.toFixed(1)} кг)</div>
+                <div class="cart-item-qty">${displayText}</div>
             </div>
             <div class="cart-item-actions">
                 <button class="btn-small btn-edit" onclick="editCartItem(${index})">✏️</button>
@@ -266,10 +297,11 @@ function renderCart() {
 // Редактирование товара в корзине
 function editCartItem(index) {
     const item = cart[index];
-    const newQuantity = prompt('Новое количество:', item.quantity);
+    const label = item.isWeightBased ? 'кг' : 'шт';
+    const newQuantity = prompt(`Новое количество (${label}):`, item.quantity);
 
-    if (newQuantity && parseInt(newQuantity) > 0) {
-        cart[index].quantity = parseInt(newQuantity);
+    if (newQuantity && parseFloat(newQuantity) > 0) {
+        cart[index].quantity = parseFloat(newQuantity);
         saveData();
         renderCart();
         tg.HapticFeedback.notificationOccurred('success');
@@ -314,7 +346,13 @@ function generateOrderText() {
     let orderText = `${storeName} ${storeAddress}\n`;
 
     cart.forEach(item => {
-        orderText += `${item.name} ${item.quantity} шт\n`;
+        if (item.isWeightBased) {
+            // Для ребер: показываем кг
+            orderText += `${item.name} ${item.quantity} кг\n`;
+        } else {
+            // Для остальных: показываем шт
+            orderText += `${item.name} ${item.quantity} шт\n`;
+        }
     });
 
     if (comment) {
@@ -325,8 +363,13 @@ function generateOrderText() {
     let totalSum = 0;
 
     cart.forEach(item => {
-        totalWeight += item.weight * item.quantity;
-        totalSum += item.price * item.weight * item.quantity;
+        if (item.isWeightBased) {
+            totalWeight += item.quantity;
+            totalSum += item.price * item.quantity;
+        } else {
+            totalWeight += item.weight * item.quantity;
+            totalSum += item.price * item.weight * item.quantity;
+        }
     });
 
     orderText += `${totalWeight.toFixed(1)}кг\n`;
@@ -496,6 +539,21 @@ function deleteLog(index) {
         logs.splice(index, 1);
         saveData();
         renderLogs();
+    }
+}
+
+// Удаление всех логов
+function clearAllLogs() {
+    if (logs.length === 0) {
+        alert('Нет логов для удаления');
+        return;
+    }
+
+    if (confirm(`Удалить все ${logs.length} заявок из истории? Это действие нельзя отменить!`)) {
+        logs = [];
+        saveData();
+        renderLogs();
+        alert('Все логи удалены');
     }
 }
 
