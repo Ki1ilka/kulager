@@ -1,13 +1,15 @@
 // Telegram Web App API
-const tg = window.Telegram.WebApp;
+const tg = window.Telegram?.WebApp || { expand: () => {}, HapticFeedback: { notificationOccurred: () => {} } };
 tg.expand();
 
 // Данные
 let products = [];
 let cart = [];
 let stores = {};
+let logs = [];
 let currentDistrict = 1;
 let selectedProduct = null;
+let currentTab = 'orders';
 
 // Загрузка данных из localStorage
 function loadData() {
@@ -20,12 +22,37 @@ function loadData() {
     if (savedCart) {
         cart = JSON.parse(savedCart);
     }
+
+    const savedLogs = localStorage.getItem('kulager_logs');
+    if (savedLogs) {
+        logs = JSON.parse(savedLogs);
+    }
 }
 
 // Сохранение данных
 function saveData() {
     localStorage.setItem('kulager_stores', JSON.stringify(stores));
     localStorage.setItem('kulager_cart', JSON.stringify(cart));
+    localStorage.setItem('kulager_logs', JSON.stringify(logs));
+}
+
+// Переключение вкладок
+function switchTab(tabName) {
+    currentTab = tabName;
+
+    // Обновляем активные табы
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+    event.target.classList.add('active');
+    document.getElementById(`tab-${tabName}`).classList.add('active');
+
+    // Загружаем данные для вкладки
+    if (tabName === 'logs') {
+        renderLogs();
+    } else if (tabName === 'stats') {
+        renderStats();
+    }
 }
 
 // Загрузка продуктов
@@ -38,7 +65,7 @@ async function loadProducts() {
         renderProducts();
     } catch (error) {
         console.error('Ошибка загрузки продуктов:', error);
-        tg.showAlert('Ошибка загрузки базы данных продуктов');
+        alert('Ошибка загрузки базы данных продуктов');
     }
 }
 
@@ -81,8 +108,11 @@ function renderStoreList() {
         const item = document.createElement('div');
         item.className = 'store-item';
         item.innerHTML = `
-            <div class="store-name">${store.name}</div>
-            <div class="store-address">${store.address}</div>
+            <div class="store-item-info">
+                <div class="store-name">${store.name}</div>
+                <div class="store-address">${store.address}</div>
+            </div>
+            <button class="store-delete" onclick="deleteStore(${index}); event.stopPropagation();">🗑️</button>
         `;
         item.onclick = () => selectStore(store);
         container.appendChild(item);
@@ -97,6 +127,15 @@ function selectStore(store) {
         item.classList.remove('active');
     });
     event.target.closest('.store-item').classList.add('active');
+}
+
+// Удаление магазина
+function deleteStore(index) {
+    if (confirm('Удалить этот магазин из истории?')) {
+        stores[currentDistrict].splice(index, 1);
+        saveData();
+        renderStoreList();
+    }
 }
 
 // Отрисовка категорий
@@ -165,7 +204,7 @@ function addToCart() {
     const quantity = parseInt(document.getElementById('modalQuantity').value);
 
     if (!quantity || quantity <= 0) {
-        tg.showAlert('Укажите количество');
+        alert('Укажите количество');
         return;
     }
 
@@ -258,19 +297,80 @@ function clearOrder() {
     }
 }
 
-// Отправка заявки
-function sendOrder() {
+// Генерация текста заявки
+function generateOrderText() {
     const storeName = document.getElementById('storeName').value.trim();
     const storeAddress = document.getElementById('storeAddress').value.trim();
     const comment = document.getElementById('orderComment').value.trim();
 
     if (!storeName || !storeAddress) {
-        tg.showAlert('Укажите название и адрес магазина');
-        return;
+        return null;
     }
 
     if (cart.length === 0) {
-        tg.showAlert('Добавьте товары в заявку');
+        return null;
+    }
+
+    let orderText = `${storeName} ${storeAddress}\n`;
+
+    cart.forEach(item => {
+        orderText += `${item.name} ${item.quantity} шт\n`;
+    });
+
+    if (comment) {
+        orderText += `(${comment})\n`;
+    }
+
+    let totalWeight = 0;
+    let totalSum = 0;
+
+    cart.forEach(item => {
+        totalWeight += item.weight * item.quantity;
+        totalSum += item.price * item.weight * item.quantity;
+    });
+
+    orderText += `${totalWeight.toFixed(1)}кг\n`;
+    orderText += `${Math.round(totalSum)} ₸`;
+
+    return orderText;
+}
+
+// Предпросмотр заявки
+function previewOrder() {
+    const orderText = generateOrderText();
+
+    if (!orderText) {
+        alert('Заполните магазин и добавьте товары');
+        return;
+    }
+
+    document.getElementById('previewText').value = orderText;
+    document.getElementById('previewModal').classList.add('active');
+}
+
+// Закрытие предпросмотра
+function closePreview() {
+    document.getElementById('previewModal').classList.remove('active');
+}
+
+// Копирование из предпросмотра
+function copyFromPreview() {
+    const text = document.getElementById('previewText').value;
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Заявка скопирована!');
+        closePreview();
+    });
+}
+
+// Копирование заявки
+function copyOrder() {
+    const storeName = document.getElementById('storeName').value.trim();
+    const storeAddress = document.getElementById('storeAddress').value.trim();
+
+    const orderText = generateOrderText();
+
+    if (!orderText) {
+        alert('Заполните магазин и добавьте товары');
         return;
     }
 
@@ -288,74 +388,158 @@ function sendOrder() {
             name: storeName,
             address: storeAddress
         });
-        saveData();
     }
 
-    // Формирование текста заявки
-    let orderText = `${storeName} ${storeAddress}\n`;
+    // Сохранение в логи
+    const log = {
+        id: Date.now(),
+        date: new Date().toISOString(),
+        district: currentDistrict,
+        storeName: storeName,
+        storeAddress: storeAddress,
+        items: [...cart],
+        comment: document.getElementById('orderComment').value.trim(),
+        text: orderText,
+        totalWeight: cart.reduce((sum, item) => sum + item.weight * item.quantity, 0),
+        totalSum: cart.reduce((sum, item) => sum + item.price * item.weight * item.quantity, 0)
+    };
 
-    cart.forEach(item => {
-        orderText += `${item.name} ${item.quantity} шт\n`;
-    });
-
-    if (comment) {
-        orderText += `(${comment})\n`;
-    }
-
-    // Подсчет общего веса и суммы
-    let totalWeight = 0;
-    let totalSum = 0;
-
-    cart.forEach(item => {
-        totalWeight += item.weight * item.quantity;
-        totalSum += item.price * item.weight * item.quantity;
-    });
-
-    orderText += `${totalWeight.toFixed(1)}кг\n`;
-    orderText += `${Math.round(totalSum)} ₸`;
-
-    // Отправка через Telegram Web App API
-    tg.sendData(orderText);
-
-    // Очистка корзины после отправки
-    cart = [];
-    document.getElementById('orderComment').value = '';
+    logs.unshift(log);
     saveData();
-    renderCart();
+
+    // Копирование в буфер
+    navigator.clipboard.writeText(orderText).then(() => {
+        alert('Заявка скопирована и сохранена в логи!');
+
+        // Очистка корзины
+        cart = [];
+        document.getElementById('orderComment').value = '';
+        saveData();
+        renderCart();
+    });
 }
 
-// Копирование заявки в буфер обмена (для тестирования без Telegram)
-function copyOrder() {
-    const storeName = document.getElementById('storeName').value.trim();
-    const storeAddress = document.getElementById('storeAddress').value.trim();
-    const comment = document.getElementById('orderComment').value.trim();
+// Отрисовка логов
+function renderLogs() {
+    const container = document.getElementById('logsList');
 
-    if (!storeName || !storeAddress || cart.length === 0) {
-        alert('Заполните все поля');
+    if (logs.length === 0) {
+        container.innerHTML = '<div class="empty-state">Нет сохраненных заявок</div>';
         return;
     }
 
-    let orderText = `${storeName} ${storeAddress}\n`;
-    cart.forEach(item => {
-        orderText += `${item.name} ${item.quantity} шт\n`;
+    container.innerHTML = '';
+
+    logs.forEach((log, index) => {
+        const date = new Date(log.date);
+        const dateStr = date.toLocaleString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        const div = document.createElement('div');
+        div.className = 'log-item';
+        div.innerHTML = `
+            <div class="log-header">
+                <div>
+                    <div class="log-store">${log.storeName}</div>
+                    <div class="log-date">Район ${log.district} • ${dateStr}</div>
+                </div>
+            </div>
+            <div class="log-content">${log.text}</div>
+            <div class="log-actions">
+                <button class="btn-primary" onclick="copyLog(${index})">📋 Копировать</button>
+                <button class="btn-secondary" onclick="repeatOrder(${index})">🔄 Повторить</button>
+                <button class="btn-delete" onclick="deleteLog(${index})">🗑️</button>
+            </div>
+        `;
+        container.appendChild(div);
     });
-    if (comment) {
-        orderText += `(${comment})\n`;
+}
+
+// Копирование лога
+function copyLog(index) {
+    const log = logs[index];
+    navigator.clipboard.writeText(log.text).then(() => {
+        alert('Заявка скопирована!');
+    });
+}
+
+// Повторить заказ
+function repeatOrder(index) {
+    const log = logs[index];
+
+    // Переключаемся на вкладку заявок
+    document.querySelectorAll('.tab')[0].click();
+
+    // Заполняем данные
+    currentDistrict = log.district;
+    selectDistrict(log.district);
+    document.getElementById('storeName').value = log.storeName;
+    document.getElementById('storeAddress').value = log.storeAddress;
+    document.getElementById('orderComment').value = log.comment || '';
+
+    // Заполняем корзину
+    cart = [...log.items];
+    saveData();
+    renderCart();
+
+    alert('Заказ загружен! Можете редактировать и отправить.');
+}
+
+// Удаление лога
+function deleteLog(index) {
+    if (confirm('Удалить эту заявку из истории?')) {
+        logs.splice(index, 1);
+        saveData();
+        renderLogs();
+    }
+}
+
+// Отрисовка статистики
+function renderStats() {
+    const totalOrders = logs.length;
+    const totalWeight = logs.reduce((sum, log) => sum + log.totalWeight, 0);
+    const totalSum = logs.reduce((sum, log) => sum + log.totalSum, 0);
+
+    document.getElementById('statTotalOrders').textContent = totalOrders;
+    document.getElementById('statTotalWeight').textContent = `${totalWeight.toFixed(1)} кг`;
+    document.getElementById('statTotalSum').textContent = `${Math.round(totalSum).toLocaleString('ru-RU')} ₸`;
+
+    // Статистика по районам
+    const byDistrict = {};
+    for (let i = 1; i <= 5; i++) {
+        byDistrict[i] = {
+            orders: 0,
+            weight: 0,
+            sum: 0
+        };
     }
 
-    let totalWeight = 0;
-    let totalSum = 0;
-    cart.forEach(item => {
-        totalWeight += item.weight * item.quantity;
-        totalSum += item.price * item.weight * item.quantity;
+    logs.forEach(log => {
+        byDistrict[log.district].orders++;
+        byDistrict[log.district].weight += log.totalWeight;
+        byDistrict[log.district].sum += log.totalSum;
     });
 
-    orderText += `${totalWeight.toFixed(1)}кг\n`;
-    orderText += `${Math.round(totalSum)} ₸`;
+    const container = document.getElementById('statsByDistrict');
+    container.innerHTML = '';
 
-    navigator.clipboard.writeText(orderText).then(() => {
-        alert('Заявка скопирована в буфер обмена!');
-    });
+    for (let i = 1; i <= 5; i++) {
+        const stat = byDistrict[i];
+        const div = document.createElement('div');
+        div.style.cssText = 'background: var(--tg-theme-bg-color, #fff); padding: 12px; border-radius: 8px; margin-bottom: 8px;';
+        div.innerHTML = `
+            <div style="font-weight: 600; margin-bottom: 4px;">Район ${i}</div>
+            <div style="font-size: 13px; color: var(--tg-theme-hint-color, #999);">
+                Заявок: ${stat.orders} • Вес: ${stat.weight.toFixed(1)} кг • Сумма: ${Math.round(stat.sum).toLocaleString('ru-RU')} ₸
+            </div>
+        `;
+        container.appendChild(div);
+    }
 }
 
 // Инициализация

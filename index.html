@@ -16,8 +16,41 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--tg-theme-bg-color, #ffffff);
             color: var(--tg-theme-text-color, #000000);
-            padding: 16px;
             padding-bottom: 80px;
+        }
+
+        /* Табы */
+        .tabs {
+            display: flex;
+            background: var(--tg-theme-bg-color, #fff);
+            border-bottom: 1px solid var(--tg-theme-hint-color, #ddd);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--tg-theme-button-color, #3390ec);
+            color: var(--tg-theme-button-color, #3390ec);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 16px;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .header {
@@ -108,6 +141,9 @@
             cursor: pointer;
             border: 2px solid transparent;
             transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .store-item:hover {
@@ -119,14 +155,28 @@
             color: var(--tg-theme-button-text-color, #fff);
         }
 
-        .store-item .store-name {
+        .store-item-info {
+            flex: 1;
+        }
+
+        .store-name {
             font-weight: 600;
             margin-bottom: 4px;
         }
 
-        .store-item .store-address {
+        .store-address {
             font-size: 13px;
             opacity: 0.7;
+        }
+
+        .store-delete {
+            padding: 6px 12px;
+            background: #ff3b30;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
         }
 
         .category-select {
@@ -286,8 +336,10 @@
             background: var(--tg-theme-bg-color, #fff);
             border-radius: 12px;
             padding: 20px;
-            max-width: 400px;
+            max-width: 500px;
             width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .modal-title {
@@ -318,62 +370,187 @@
             background-repeat: no-repeat;
             background-position: 10px center;
         }
+
+        /* Логи */
+        .log-item {
+            background: var(--tg-theme-bg-color, #fff);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--tg-theme-hint-color, #ddd);
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .log-store {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .log-date {
+            font-size: 12px;
+            color: var(--tg-theme-hint-color, #999);
+        }
+
+        .log-content {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 13px;
+            background: var(--tg-theme-secondary-bg-color, #f5f5f5);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .log-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .log-actions button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Статистика */
+        .stat-card {
+            background: var(--tg-theme-bg-color, #fff);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--tg-theme-button-color, #3390ec);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--tg-theme-hint-color, #999);
+        }
+
+        .preview-text {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+            background: var(--tg-theme-secondary-bg-color, #f5f5f5);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>📦 Новая заявка</h1>
+    <!-- Табы -->
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('orders')">📦 Заявки</div>
+        <div class="tab" onclick="switchTab('logs')">📋 Логи</div>
+        <div class="tab" onclick="switchTab('stats')">📊 Статистика</div>
     </div>
 
-    <!-- Выбор района -->
-    <div class="section">
-        <div class="section-title">Район</div>
-        <div class="district-buttons" id="districtButtons"></div>
+    <!-- Вкладка: Заявки -->
+    <div class="tab-content active" id="tab-orders">
+        <div class="header">
+            <h1>📦 Новая заявка</h1>
+        </div>
+
+        <!-- Выбор района -->
+        <div class="section">
+            <div class="section-title">Район</div>
+            <div class="district-buttons" id="districtButtons"></div>
+        </div>
+
+        <!-- Выбор магазина -->
+        <div class="section">
+            <div class="section-title">Магазин</div>
+            <div class="input-group">
+                <input type="text" id="storeName" placeholder="Название магазина">
+            </div>
+            <div class="input-group">
+                <input type="text" id="storeAddress" placeholder="Адрес магазина">
+            </div>
+            <div class="store-list" id="storeList"></div>
+        </div>
+
+        <!-- Выбор продукции -->
+        <div class="section">
+            <div class="section-title">Продукция</div>
+            <div class="search-box">
+                <input type="text" id="productSearch" placeholder="Поиск товара...">
+            </div>
+            <div class="category-select">
+                <select id="categorySelect">
+                    <option value="">Все категории</option>
+                </select>
+            </div>
+            <div class="products-grid" id="productsGrid"></div>
+        </div>
+
+        <!-- Корзина -->
+        <div class="section cart">
+            <div class="section-title">Заявка</div>
+            <div id="cartItems"></div>
+            <div class="input-group">
+                <label>Комментарий / Возврат</label>
+                <textarea id="orderComment" placeholder="Например: Сертификат, Возврат ребра 940 грамм"></textarea>
+            </div>
+            <div class="total-weight" id="totalWeight">0 кг</div>
+            <div class="total-weight" id="totalSum" style="margin-top: 8px; background: var(--tg-theme-button-color, #3390ec); color: var(--tg-theme-button-text-color, #fff);">0 ₸</div>
+        </div>
     </div>
 
-    <!-- Выбор магазина -->
-    <div class="section">
-        <div class="section-title">Магазин</div>
-        <div class="input-group">
-            <input type="text" id="storeName" placeholder="Название магазина">
+    <!-- Вкладка: Логи -->
+    <div class="tab-content" id="tab-logs">
+        <div class="header">
+            <h1>📋 История заявок</h1>
         </div>
-        <div class="input-group">
-            <input type="text" id="storeAddress" placeholder="Адрес магазина">
-        </div>
-        <div class="store-list" id="storeList"></div>
+        <div id="logsList"></div>
     </div>
 
-    <!-- Выбор продукции -->
-    <div class="section">
-        <div class="section-title">Продукция</div>
-        <div class="search-box">
-            <input type="text" id="productSearch" placeholder="Поиск товара...">
+    <!-- Вкладка: Статистика -->
+    <div class="tab-content" id="tab-stats">
+        <div class="header">
+            <h1>📊 Статистика</h1>
         </div>
-        <div class="category-select">
-            <select id="categorySelect">
-                <option value="">Все категории</option>
-            </select>
+        <div class="stat-card">
+            <div class="stat-value" id="statTotalOrders">0</div>
+            <div class="stat-label">Всего заявок</div>
         </div>
-        <div class="products-grid" id="productsGrid"></div>
-    </div>
-
-    <!-- Корзина -->
-    <div class="section cart">
-        <div class="section-title">Заявка</div>
-        <div id="cartItems"></div>
-        <div class="input-group">
-            <label>Комментарий / Возврат</label>
-            <textarea id="orderComment" placeholder="Например: Сертификат, Возврат ребра 940 грамм"></textarea>
+        <div class="stat-card">
+            <div class="stat-value" id="statTotalWeight">0 кг</div>
+            <div class="stat-label">Общий тоннаж</div>
         </div>
-        <div class="total-weight" id="totalWeight">0 кг</div>
-        <div class="total-weight" id="totalSum" style="margin-top: 8px; background: var(--tg-theme-button-color, #3390ec); color: var(--tg-theme-button-text-color, #fff);">0 ₸</div>
+        <div class="stat-card">
+            <div class="stat-value" id="statTotalSum">0 ₸</div>
+            <div class="stat-label">Общая сумма</div>
+        </div>
+        <div class="section">
+            <div class="section-title">По районам</div>
+            <div id="statsByDistrict"></div>
+        </div>
     </div>
 
     <!-- Нижняя панель -->
     <div class="bottom-bar">
         <button class="btn-secondary" onclick="clearOrder()">Очистить</button>
-        <button class="btn-secondary" onclick="copyOrder()" style="flex: 0.5;">📋</button>
-        <button class="btn-primary" onclick="sendOrder()">Отправить</button>
+        <button class="btn-secondary" onclick="previewOrder()" style="flex: 0.5;">👁️</button>
+        <button class="btn-primary" onclick="copyOrder()">Копировать</button>
     </div>
 
     <!-- Модальное окно для добавления товара -->
@@ -387,6 +564,18 @@
             <div class="modal-buttons">
                 <button class="btn-secondary" style="flex: 1" onclick="closeModal()">Отмена</button>
                 <button class="btn-primary" style="flex: 1" onclick="addToCart()">Добавить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно предпросмотра -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content">
+            <div class="modal-title">Предпросмотр заявки</div>
+            <textarea class="preview-text" id="previewText" style="width: 100%; min-height: 300px; font-family: monospace;"></textarea>
+            <div class="modal-buttons">
+                <button class="btn-secondary" style="flex: 1" onclick="closePreview()">Закрыть</button>
+                <button class="btn-primary" style="flex: 1" onclick="copyFromPreview()">Копировать</button>
             </div>
         </div>
     </div>
