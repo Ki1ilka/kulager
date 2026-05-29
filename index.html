@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кулагер - Заявки</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .section {
+            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--tg-theme-hint-color, #999);
+            text-transform: uppercase;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--tg-theme-hint-color, #ccc);
+            border-radius: 8px;
+            font-size: 16px;
+            background: var(--tg-theme-bg-color, #fff);
+            color: var(--tg-theme-text-color, #000);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .district-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .district-btn {
+            padding: 12px 8px;
+            border: 2px solid var(--tg-theme-button-color, #3390ec);
+            background: transparent;
+            color: var(--tg-theme-button-color, #3390ec);
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .district-btn.active {
+            background: var(--tg-theme-button-color, #3390ec);
+            color: var(--tg-theme-button-text-color, #fff);
+        }
+
+        .store-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+        }
+
+        .store-item {
+            padding: 12px;
+            background: var(--tg-theme-bg-color, #fff);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .store-item:hover {
+            border-color: var(--tg-theme-button-color, #3390ec);
+        }
+
+        .store-item.active {
+            background: var(--tg-theme-button-color, #3390ec);
+            color: var(--tg-theme-button-text-color, #fff);
+        }
+
+        .store-item .store-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .store-item .store-address {
+            font-size: 13px;
+            opacity: 0.7;
+        }
+
+        .category-select {
+            margin-bottom: 12px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+        }
+
+        .product-btn {
+            padding: 12px 8px;
+            background: var(--tg-theme-bg-color, #fff);
+            border: 2px solid var(--tg-theme-hint-color, #ddd);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+
+        .product-btn:hover {
+            border-color: var(--tg-theme-button-color, #3390ec);
+        }
+
+        .product-name {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .product-price {
+            font-size: 12px;
+            color: var(--tg-theme-hint-color, #999);
+        }
+
+        .cart {
+            margin-top: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--tg-theme-bg-color, #fff);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .cart-item-qty {
+            font-size: 13px;
+            color: var(--tg-theme-hint-color, #999);
+        }
+
+        .cart-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-edit {
+            background: var(--tg-theme-button-color, #3390ec);
+            color: var(--tg-theme-button-text-color, #fff);
+        }
+
+        .btn-delete {
+            background: #ff3b30;
+            color: #fff;
+        }
+
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--tg-theme-bg-color, #fff);
+            padding: 12px 16px;
+            border-top: 1px solid var(--tg-theme-hint-color, #ddd);
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: 14px;
+            background: var(--tg-theme-button-color, #3390ec);
+            color: var(--tg-theme-button-text-color, #fff);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            padding: 14px 20px;
+            background: transparent;
+            color: var(--tg-theme-button-color, #3390ec);
+            border: 2px solid var(--tg-theme-button-color, #3390ec);
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .total-weight {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--tg-theme-bg-color, #fff);
+            border-radius: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--tg-theme-bg-color, #fff);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--tg-theme-hint-color, #999);
+        }
+
+        .search-box {
+            margin-bottom: 12px;
+        }
+
+        .search-box input {
+            padding-left: 36px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 10px center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📦 Новая заявка</h1>
+    </div>
+
+    <!-- Выбор района -->
+    <div class="section">
+        <div class="section-title">Район</div>
+        <div class="district-buttons" id="districtButtons"></div>
+    </div>
+
+    <!-- Выбор магазина -->
+    <div class="section">
+        <div class="section-title">Магазин</div>
+        <div class="input-group">
+            <input type="text" id="storeName" placeholder="Название магазина">
+        </div>
+        <div class="input-group">
+            <input type="text" id="storeAddress" placeholder="Адрес магазина">
+        </div>
+        <div class="store-list" id="storeList"></div>
+    </div>
+
+    <!-- Выбор продукции -->
+    <div class="section">
+        <div class="section-title">Продукция</div>
+        <div class="search-box">
+            <input type="text" id="productSearch" placeholder="Поиск товара...">
+        </div>
+        <div class="category-select">
+            <select id="categorySelect">
+                <option value="">Все категории</option>
+            </select>
+        </div>
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <!-- Корзина -->
+    <div class="section cart">
+        <div class="section-title">Заявка</div>
+        <div id="cartItems"></div>
+        <div class="input-group">
+            <label>Комментарий / Возврат</label>
+            <textarea id="orderComment" placeholder="Например: Сертификат, Возврат ребра 940 грамм"></textarea>
+        </div>
+        <div class="total-weight" id="totalWeight">0 кг</div>
+        <div class="total-weight" id="totalSum" style="margin-top: 8px; background: var(--tg-theme-button-color, #3390ec); color: var(--tg-theme-button-text-color, #fff);">0 ₸</div>
+    </div>
+
+    <!-- Нижняя панель -->
+    <div class="bottom-bar">
+        <button class="btn-secondary" onclick="clearOrder()">Очистить</button>
+        <button class="btn-secondary" onclick="copyOrder()" style="flex: 0.5;">📋</button>
+        <button class="btn-primary" onclick="sendOrder()">Отправить</button>
+    </div>
+
+    <!-- Модальное окно для добавления товара -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <div class="modal-title" id="modalProductName"></div>
+            <div class="input-group">
+                <label>Количество (шт)</label>
+                <input type="number" id="modalQuantity" placeholder="1" min="1" value="1">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" style="flex: 1" onclick="closeModal()">Отмена</button>
+                <button class="btn-primary" style="flex: 1" onclick="addToCart()">Добавить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

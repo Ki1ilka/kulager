@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+*.log
+bot.js
+server.js
+package.json
+package-lock.json
+README.md
+LOCAL_SETUP.md
+DEPLOY.md
