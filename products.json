@@ -4,10 +4,10 @@
       "id": "halal_boiled",
       "name": "Вареные колбасы Халал",
       "products": [
-        {"id": "h_doktorskaya", "name": "Докторская", "price": 2650, "weight": 1.0},
-        {"id": "h_kazakhstanskaya", "name": "Казахстанская", "price": 2450, "weight": 1.0},
-        {"id": "h_buterbrod", "name": "Бутербродная", "price": 1800, "weight": 1.0},
-        {"id": "h_vetchina", "name": "Ветчина Нежная", "price": 2700, "weight": 1.0},
+        {"id": "h_doktorskaya", "name": "Докторская", "price": 2650, "weight": 0.6},
+        {"id": "h_kazakhstanskaya", "name": "Казахстанская", "price": 2450, "weight": 0.6},
+        {"id": "h_buterbrod", "name": "Бутербродная", "price": 1800, "weight": 0.6},
+        {"id": "h_vetchina", "name": "Ветчина Нежная", "price": 2700, "weight": 0.6},
         {"id": "h_molochnaya", "name": "Молочная шт", "price": 1060, "weight": 0.4},
         {"id": "h_musulmanskaya", "name": "Мусульманская шт", "price": 1060, "weight": 0.4}
       ]
@@ -16,37 +16,37 @@
       "id": "halal_sausages",
       "name": "Сардельки, сосиски Халал",
       "products": [
-        {"id": "h_sard_govyazh", "name": "Сардельки Говяжьи", "price": 3000, "weight": 1.0},
-        {"id": "h_sard_musul", "name": "Сардельки Мусульманские", "price": 2300, "weight": 1.0},
-        {"id": "h_sos_musul_nat", "name": "Сосиски Мусульманские нат", "price": 2370, "weight": 1.0},
-        {"id": "h_sos_musul_isk", "name": "Сосиски Мусульманские иск", "price": 2670, "weight": 1.0},
-        {"id": "h_sos_vostoch", "name": "Сосиски Восточные", "price": 2050, "weight": 1.0},
-        {"id": "h_sard_domashn", "name": "Сардельки По-домашнему", "price": 1680, "weight": 1.0},
-        {"id": "h_sos_demdi", "name": "Сосиски Дәмді", "price": 2300, "weight": 1.0},
-        {"id": "h_sos_halal", "name": "Сосиски Халал", "price": 2050, "weight": 1.0},
-        {"id": "h_sos_dogi", "name": "Сосиски Доги", "price": 1600, "weight": 1.0},
-        {"id": "h_sos_appet_ves", "name": "Сосиски Аппетитные весовые", "price": 1750, "weight": 1.0},
-        {"id": "h_kolb_ohot", "name": "Колбаски Охотничьи", "price": 3600, "weight": 1.0}
+        {"id": "h_sard_govyazh", "name": "Сардельки Говяжьи", "price": 3000, "weight": 0.5},
+        {"id": "h_sard_musul", "name": "Сардельки Мусульманские", "price": 2300, "weight": 0.5},
+        {"id": "h_sos_musul_nat", "name": "Сосиски Мусульманские нат", "price": 2370, "weight": 0.5},
+        {"id": "h_sos_musul_isk", "name": "Сосиски Мусульманские иск", "price": 2670, "weight": 0.5},
+        {"id": "h_sos_vostoch", "name": "Сосиски Восточные", "price": 2050, "weight": 0.5},
+        {"id": "h_sard_domashn", "name": "Сардельки По-домашнему", "price": 1680, "weight": 0.5},
+        {"id": "h_sos_demdi", "name": "Сосиски Дәмді", "price": 2300, "weight": 0.5},
+        {"id": "h_sos_halal", "name": "Сосиски Халал", "price": 2050, "weight": 0.5},
+        {"id": "h_sos_dogi", "name": "Сосиски Доги", "price": 1600, "weight": 0.5},
+        {"id": "h_sos_appet_ves", "name": "Сосиски Аппетитные весовые", "price": 1750, "weight": 0.5},
+        {"id": "h_kolb_ohot", "name": "Колбаски Охотничьи", "price": 3600, "weight": 0.5}
       ]
     },
     {
       "id": "halal_semismoked",
       "name": "Полукопченые колбасы Халал",
       "products": [
-        {"id": "h_serv_govyazh", "name": "Сервелат Говяжий", "price": 2450, "weight": 1.0},
-        {"id": "h_chesnoch", "name": "Чесночная", "price": 2300, "weight": 1.0},
-        {"id": "h_serv_elit", "name": "Сервелат Элитный", "price": 2800, "weight": 1.0},
-        {"id": "h_serv_musul", "name": "Сервелат Мусульманский", "price": 2500, "weight": 1.0},
-        {"id": "h_indeyka_syr", "name": "Индейка с сыром", "price": 2250, "weight": 1.0},
-        {"id": "h_serv_nauryz", "name": "Сервелат Наурыз", "price": 2350, "weight": 1.0},
-        {"id": "h_serv_konsk", "name": "Сервелат Конский", "price": 2250, "weight": 1.0}
+        {"id": "h_serv_govyazh", "name": "Сервелат Говяжий", "price": 2450, "weight": 0.5},
+        {"id": "h_chesnoch", "name": "Чесночная", "price": 2300, "weight": 0.4},
+        {"id": "h_serv_elit", "name": "Сервелат Элитный", "price": 2800, "weight": 0.5},
+        {"id": "h_serv_musul", "name": "Сервелат Мусульманский", "price": 2500, "weight": 0.5},
+        {"id": "h_indeyka_syr", "name": "Индейка с сыром", "price": 2250, "weight": 0.5},
+        {"id": "h_serv_nauryz", "name": "Сервелат Наурыз", "price": 2350, "weight": 0.5},
+        {"id": "h_serv_konsk", "name": "Сервелат Конский", "price": 2250, "weight": 0.5}
       ]
     },
     {
       "id": "halal_drycured",
       "name": "Сырокопченые колбасы Халал",
       "products": [
-        {"id": "h_salami_kulag", "name": "Салями Кулагеровская Халал", "price": 6700, "weight": 1.0}
+        {"id": "h_salami_kulag", "name": "Салями Кулагеровская Халал", "price": 6700, "weight": 0.3}
       ]
     },
     {
@@ -60,74 +60,74 @@
       "id": "boiled",
       "name": "Вареные колбасы",
       "products": [
-        {"id": "vetch_zavtrak", "name": "Ветчинная для завтрака", "price": 3800, "weight": 1.0},
-        {"id": "vetch_assorti", "name": "Ветчина Ассорти", "price": 3300, "weight": 1.0},
-        {"id": "doktorskaya", "name": "Докторская", "price": 3350, "weight": 1.0},
-        {"id": "yubileynaya", "name": "Юбилейная в синюге", "price": 2500, "weight": 1.0}
+        {"id": "vetch_zavtrak", "name": "Ветчинная для завтрака", "price": 3800, "weight": 0.6},
+        {"id": "vetch_assorti", "name": "Ветчина Ассорти", "price": 3300, "weight": 0.6},
+        {"id": "doktorskaya", "name": "Докторская", "price": 3350, "weight": 0.6},
+        {"id": "yubileynaya", "name": "Юбилейная в синюге", "price": 2500, "weight": 2.5}
       ]
     },
     {
       "id": "sausages",
       "name": "Сардельки, сосиски",
       "products": [
-        {"id": "sard_gannover", "name": "Сардельки Ганноверские", "price": 3700, "weight": 1.0},
-        {"id": "sard_pikant", "name": "Сардельки Пикантные", "price": 1800, "weight": 1.0},
-        {"id": "sos_assorti", "name": "Сосиски Ассорти весовые", "price": 1750, "weight": 1.0},
-        {"id": "sos_venskie", "name": "Сосиски Венские", "price": 3200, "weight": 1.0},
-        {"id": "sard_shpikach", "name": "Сардельки Шпикачки", "price": 1800, "weight": 1.0},
-        {"id": "sos_nezhn", "name": "Сосиски нежные", "price": 3000, "weight": 1.0},
-        {"id": "sos_moloch", "name": "Сосиски Молочные", "price": 3600, "weight": 1.0}
+        {"id": "sard_gannover", "name": "Сардельки Ганноверские", "price": 3700, "weight": 0.5},
+        {"id": "sard_pikant", "name": "Сардельки Пикантные", "price": 1800, "weight": 0.5},
+        {"id": "sos_assorti", "name": "Сосиски Ассорти весовые", "price": 1750, "weight": 0.5},
+        {"id": "sos_venskie", "name": "Сосиски Венские", "price": 3200, "weight": 0.5},
+        {"id": "sard_shpikach", "name": "Сардельки Шпикачки", "price": 1800, "weight": 0.5},
+        {"id": "sos_nezhn", "name": "Сосиски нежные", "price": 3000, "weight": 0.5},
+        {"id": "sos_moloch", "name": "Сосиски Молочные", "price": 3600, "weight": 0.5}
       ]
     },
     {
       "id": "semismoked",
       "name": "Полукопченые колбасы",
       "products": [
-        {"id": "prima_plus", "name": "Прима плюс", "price": 3750, "weight": 1.0},
-        {"id": "krakovskaya", "name": "Краковская ГОСТ", "price": 4250, "weight": 1.0},
-        {"id": "pechen_domashn", "name": "Печеночная домашняя", "price": 2600, "weight": 1.0},
-        {"id": "stolichnaya", "name": "Столичная", "price": 3200, "weight": 1.0},
-        {"id": "derevenskaya", "name": "Деревенская", "price": 1650, "weight": 1.0},
-        {"id": "boyarskaya", "name": "Боярская", "price": 1750, "weight": 1.0},
-        {"id": "grigorievskaya", "name": "Григорьевская", "price": 2500, "weight": 1.0}
+        {"id": "prima_plus", "name": "Прима плюс", "price": 3750, "weight": 0.5},
+        {"id": "krakovskaya", "name": "Краковская ГОСТ", "price": 4250, "weight": 0.4},
+        {"id": "pechen_domashn", "name": "Печеночная домашняя", "price": 2600, "weight": 0.4},
+        {"id": "stolichnaya", "name": "Столичная", "price": 3200, "weight": 0.5},
+        {"id": "derevenskaya", "name": "Деревенская", "price": 1650, "weight": 0.5},
+        {"id": "boyarskaya", "name": "Боярская", "price": 1750, "weight": 0.5},
+        {"id": "grigorievskaya", "name": "Григорьевская", "price": 2500, "weight": 0.5}
       ]
     },
     {
       "id": "drycured",
       "name": "Сырокопченые колбасы",
       "products": [
-        {"id": "braunshveig", "name": "Брауншвейгская", "price": 10500, "weight": 1.0},
-        {"id": "salami_kulag", "name": "Салями Кулагеровская Халал", "price": 6700, "weight": 1.0},
-        {"id": "maykopskaya", "name": "Майкопская", "price": 7300, "weight": 1.0}
+        {"id": "braunshveig", "name": "Брауншвейгская", "price": 10500, "weight": 0.3},
+        {"id": "salami_kulag", "name": "Салями Кулагеровская Халал", "price": 6700, "weight": 0.3},
+        {"id": "maykopskaya", "name": "Майкопская", "price": 7300, "weight": 0.3}
       ]
     },
     {
       "id": "cervelat",
       "name": "Сервелаты",
       "products": [
-        {"id": "servelat", "name": "Сервелат", "price": 4700, "weight": 1.0},
-        {"id": "serv_zernist", "name": "Сервелат Зернистый", "price": 3900, "weight": 1.0},
-        {"id": "serv_orehov", "name": "Сервелат Ореховый", "price": 3250, "weight": 1.0}
+        {"id": "servelat", "name": "Сервелат", "price": 4700, "weight": 0.5},
+        {"id": "serv_zernist", "name": "Сервелат Зернистый", "price": 3900, "weight": 0.5},
+        {"id": "serv_orehov", "name": "Сервелат Ореховый", "price": 3250, "weight": 0.5}
       ]
     },
     {
       "id": "smoked_pork",
       "name": "Копчености из свинины",
       "products": [
-        {"id": "pechen_sloyka", "name": "Печеночная слойка", "price": 2600, "weight": 1.0},
+        {"id": "pechen_sloyka", "name": "Печеночная слойка", "price": 2600, "weight": 0.3},
         {"id": "rebra", "name": "Ребра", "price": 2600, "weight": 1.0},
-        {"id": "shpik_venger", "name": "Шпик по-венгерски", "price": 2950, "weight": 1.0},
-        {"id": "salo_domashn", "name": "Сало по-домашнему", "price": 2950, "weight": 1.0}
+        {"id": "shpik_venger", "name": "Шпик по-венгерски", "price": 2950, "weight": 0.3},
+        {"id": "salo_domashn", "name": "Сало по-домашнему", "price": 2950, "weight": 0.3}
       ]
     },
     {
       "id": "liver",
       "name": "Ливерные колбасы",
       "products": [
-        {"id": "liver_baton", "name": "Ливерная в батоне", "price": 1350, "weight": 1.0},
-        {"id": "liver_3sort", "name": "Ливерная 3 сорт", "price": 1250, "weight": 1.0},
-        {"id": "pashtet", "name": "Паштет нежный (печеночный)", "price": 2500, "weight": 1.0},
-        {"id": "saltison", "name": "Сальтисон", "price": 2000, "weight": 1.0}
+        {"id": "liver_baton", "name": "Ливерная в батоне", "price": 1350, "weight": 0.5},
+        {"id": "liver_3sort", "name": "Ливерная 3 сорт", "price": 1250, "weight": 0.5},
+        {"id": "pashtet", "name": "Паштет нежный (печеночный)", "price": 2500, "weight": 0.5},
+        {"id": "saltison", "name": "Сальтисон", "price": 2000, "weight": 0.5}
       ]
     },
     {
@@ -142,20 +142,20 @@
       "id": "promo",
       "name": "Акционные позиции",
       "products": [
-        {"id": "promo_appet", "name": "Сосиски Аппетитные", "price": 1450, "weight": 1.0},
-        {"id": "promo_musul", "name": "Сосиски Мусульманские", "price": 1450, "weight": 1.0}
+        {"id": "promo_appet", "name": "Сосиски Аппетитные", "price": 1450, "weight": 0.5},
+        {"id": "promo_musul", "name": "Сосиски Мусульманские", "price": 1450, "weight": 0.5}
       ]
     },
     {
       "id": "new",
       "name": "Новинки",
       "products": [
-        {"id": "naggettsy", "name": "Наггетсы сочные из куриного филе", "price": 3500, "weight": 1.0},
-        {"id": "kolb_zhar_svin", "name": "Колбаски для жарки свиные", "price": 3800, "weight": 1.0},
-        {"id": "kolb_zhar_kur", "name": "Колбаски для жарки куриные", "price": 3400, "weight": 1.0},
-        {"id": "grudinka", "name": "Грудинка в/к", "price": 3200, "weight": 1.0},
-        {"id": "koreyka", "name": "Корейка в/к", "price": 4000, "weight": 1.0},
-        {"id": "kur_polutushka", "name": "Куриная полутушка в/к", "price": 3000, "weight": 1.0}
+        {"id": "naggettsy", "name": "Наггетсы сочные из куриного филе", "price": 3500, "weight": 0.35},
+        {"id": "kolb_zhar_svin", "name": "Колбаски для жарки свиные", "price": 3800, "weight": 0.7},
+        {"id": "kolb_zhar_kur", "name": "Колбаски для жарки куриные", "price": 3400, "weight": 0.7},
+        {"id": "grudinka", "name": "Грудинка в/к", "price": 3200, "weight": 0.2},
+        {"id": "koreyka", "name": "Корейка в/к", "price": 4000, "weight": 0.2},
+        {"id": "kur_polutushka", "name": "Куриная полутушка в/к", "price": 3000, "weight": 0.3}
       ]
     }
   ]

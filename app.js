@@ -247,16 +247,15 @@ function removeCartItem(index) {
 
 // Очистка заявки
 function clearOrder() {
-    if (cart.length === 0) return;
-
-    tg.showConfirm('Очистить всю заявку?', (confirmed) => {
-        if (confirmed) {
-            cart = [];
-            saveData();
-            renderCart();
-            tg.HapticFeedback.notificationOccurred('success');
-        }
-    });
+    if (confirm('Очистить всю заявку?')) {
+        cart = [];
+        document.getElementById('storeName').value = '';
+        document.getElementById('storeAddress').value = '';
+        document.getElementById('orderComment').value = '';
+        saveData();
+        renderCart();
+        alert('Заявка очищена');
+    }
 }
 
 // Отправка заявки
